@@ -116,4 +116,9 @@ export const createUsuario = (req, res) => {
     if(erro){
         return res.status(400).json({mensagem: error.details[0].message});
     }
+
+    const novoUsuario = req.body;
+    const usuarioCriado = createUsuario(usuario);
+
+    res.status(201).json(usuarioCriado);
 };
