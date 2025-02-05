@@ -1,5 +1,6 @@
 import { getAllcarros, getCarroBySigla, createCarro as modelCreateCarro, updateCarro as modelCreateCarro, deleteCarro as modelDeleteCarro} from '.../models/carroModel.js'
 import { getAllUsuarios } from '../models/usuarioModels';
+import { modeloAtualizaçãoUsuario } from '../Validations/usuarioValidation';
 
 export const getCarros =(req, res) => {
     // Chama a função que retorna todos os carros do array
@@ -121,4 +122,34 @@ export const createUsuario = (req, res) => {
     const usuarioCriado = createUsuario(usuario);
 
     res.status(201).json(usuarioCriado);
+};
+
+// Função para atualizar função de usuario
+export const updateUsuario = (req, res) => {
+    const { id } = req.params;
+    const { error } = modeloAtualizaçãoUsuario.validate(req.body);
+
+    if (error) {
+        return res.status(400).json({mensagem: error.details[0].message});
+    }
+
+    const usuarioAtualizado = updateUsuario(id, req.body);
+
+    if (!usuarioAtualizado) {
+        return res.status(404).json({mensagem: 'Usuario não encontrado para atualização!'});
+    }
+
+    res.status(200).json(usuarioAtualizado);
+};
+
+//Função para excluir um usuário
+export const deleteUsuario =(req, res) => {
+    const { id } = req.params;
+    const usuarioRemovido = deleteUsuario(id);
+
+    if (!usuarioRemovido) {
+        return res.status(404).json({mensagem: 'Usuario não encontrado para remoção!'});
+    }
+
+    res.status(200).json({mensagem: 'Usuario removido com sucesso!', usuario: usuarioRemovido});
 };
